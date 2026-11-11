@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quit — Smetti di fumare, insieme</title>
+<meta name="description" content="Quit è una comunità che ti accompagna a smettere di fumare: un piccolo gruppo che smette il tuo stesso giorno. Sigarette, svapo, tabacco riscaldato.">
+<meta name="theme-color" content="#F6F1E8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F6F1E8; --ground-2:#EFE7DA; --card:#FFFDF9;
+  --ink:#14201A; --ink-2:#4A5650;
+  --sage:#2F6B4F; --sage-2:#3E8562; --sage-field:#DCE8DF;
+  --amber:#C8742A; --amber-soft:#F6E2C8;
+  --dark:#14201A; --dark-2:#1E2D25;
+  --display:'Inter Tight',system-ui,sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+  --m:clamp(20px,4vw,56px);
+  --gap:clamp(110px,14vw,200px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--display);background:var(--ground);color:var(--ink);font-size:18px;line-height:1.55;overflow-x:hidden}
+img,svg{display:block}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.frame{padding:0 var(--m);max-width:1520px;margin:0 auto}
+h1,h2,h3{font-weight:800;letter-spacing:-.045em;line-height:.92}
+.it{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+.it.amber{color:var(--amber)} .it.sage{color:var(--sage-2)}
+h2{font-size:clamp(44px,6.4vw,96px)}
+.lede{font-size:clamp(18px,1.5vw,22px);color:var(--ink-2);max-width:34em;margin-top:32px;line-height:1.5}
+:focus-visible{outline:3px solid var(--amber);outline-offset:3px;border-radius:6px}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;padding:18px var(--m);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;pointer-events:none}
+.nav > *{pointer-events:auto}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:24px;letter-spacing:-.04em}
+.mark i{width:36px;height:36px;border-radius:11px;background:var(--ink);display:grid;place-items:center}
+.counter{background:var(--card);border-radius:999px;padding:9px 20px 9px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px -12px rgba(20,32,26,.25);font-weight:600;font-size:15px;color:var(--ink-2)}
+.counter b{font-size:22px;color:var(--ink);font-variant-numeric:tabular-nums;min-width:2ch;text-align:right;letter-spacing:-.03em}
+.counter .dot{width:26px;height:26px;border-radius:50%;background:var(--sage-field);display:grid;place-items:center}
+.nav .right{display:flex;justify-content:flex-end;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:10px;border:0;border-radius:999px;background:var(--ink);color:var(--ground);padding:15px 26px;font-weight:700;font-size:16px;text-decoration:none;cursor:pointer;transition:transform .2s var(--ease),background .2s}
+.btn:hover{transform:translateY(-2px);background:#24362C}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.light{background:var(--card);color:var(--ink)}
+.btn.light:hover{background:#fff}
+.btn.amber{background:var(--amber);color:#fff}
+.btn.amber:hover{background:#B5651F}
+.btn .s{display:none}
+@media(max-width:760px){.counter span.l,.btn .l{display:none}.btn .s{display:inline}.nav{grid-template-columns:auto 1fr auto;gap:10px}.counter{justify-self:center}.nav .btn{padding:11px 16px;font-size:14px}}
+
+/* ---------- chapter bar ---------- */
+.chapters{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:50;background:var(--card);border-radius:999px;padding:8px;display:flex;gap:2px;box-shadow:0 14px 40px -16px rgba(20,32,26,.35);max-width:calc(100vw - 24px);overflow-x:auto;scrollbar-width:none;transition:opacity .3s,transform .3s var(--ease)}
+.chapters::-webkit-scrollbar{display:none}
+.chapters.hidden{opacity:0;transform:translate(-50%,20px);pointer-events:none}
+.chapters a{text-decoration:none;font-weight:600;font-size:15px;color:#8A928D;padding:9px 16px;border-radius:999px;white-space:nowrap;transition:color .25s,background .25s}
+.chapters a:hover{color:var(--ink)}
+.chapters a.on{color:var(--ink);background:var(--sage-field)}
+.chapters a.done{color:var(--sage)}
+
+/* ---------- reveal ---------- */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}*{animation:none!important;scroll-behavior:auto!important}}
+
+/* ---------- hero ---------- */
+.hero{min-height:100vh;padding-top:120px;padding-bottom:110px;position:relative;overflow:hidden;background:
+  radial-gradient(60% 55% at 22% 18%,#F7DDBB 0%,rgba(247,221,187,0) 70%),
+  radial-gradient(50% 50% at 85% 75%,#D3E6D9 0%,rgba(211,230,217,0) 70%),var(--ground)}
+.hero .frame{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:40px;align-items:center;min-height:calc(100vh - 230px)}
+.hero h1{font-size:clamp(58px,9.4vw,152px);line-height:.88}
+.hero h1 .l2{display:block;padding-left:.55em}
+.hero h1 .l4{display:block;padding-left:.55em}
+.hero .lede{color:var(--ink)}
+.cta-row form{width:100%;max-width:480px}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:36px}
+.wait{display:flex;background:var(--card);border-radius:999px;padding:6px;box-shadow:0 10px 34px -18px rgba(20,32,26,.35);max-width:480px;width:100%}
+.wait input{flex:1;min-width:0;border:0;background:transparent;padding:0 18px;font:500 17px var(--display);color:var(--ink)}
+.wait input:focus{outline:none}
+.wait:focus-within{box-shadow:0 0 0 3px var(--sage-field),0 10px 34px -18px rgba(20,32,26,.35)}
+.thanks{display:none;background:var(--sage-field);color:var(--sage);font-weight:600;border-radius:999px;padding:16px 24px;max-width:480px}
+.sent .wait{display:none}.sent .thanks{display:block}
+.hint{font-size:15px;color:var(--ink-2);margin-top:14px}
+.how{font-weight:600;text-decoration:none;display:inline-flex;gap:8px;align-items:center;padding:12px 6px}
+.how:hover span{transform:translateY(3px)}
+.how span{transition:transform .2s}
+
+/* phone */
+.stage{position:relative;height:min(820px,90vh);display:grid;place-items:center}
+.phone{width:min(320px,74vw);aspect-ratio:9/19;background:#0E1612;border-radius:52px;padding:12px;box-shadow:0 40px 80px -30px rgba(20,32,26,.55);transform:rotate(-4deg);position:relative;z-index:2}
+.screen{background:var(--ground);border-radius:41px;height:100%;overflow:hidden;display:flex;flex-direction:column;font-size:13px}
+.sb{display:flex;justify-content:space-between;padding:14px 26px 6px;font-weight:700;font-size:13px}
+.sb i{width:84px;height:24px;background:#0E1612;border-radius:20px;margin-top:-4px}
+.ph-head{padding:10px 18px 14px;display:flex;gap:12px;align-items:center}
+.av{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;font-size:16px;flex:none}
+.ph-head .av{border:3px solid var(--sage-2)}
+.ph-head b{font-size:17px;letter-spacing:-.02em;display:block}
+.ph-head small{color:var(--ink-2);font-size:12px}
+.prog{height:7px;background:var(--ground-2);border-radius:9px;margin-top:6px;overflow:hidden}
+.prog i{display:block;height:100%;width:86%;background:var(--sage-2);border-radius:9px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 14px}
+.stats div{background:var(--card);border-radius:16px;padding:10px 8px;text-align:center}
+.stats b{display:block;font-size:20px;letter-spacing:-.03em}
+.stats small{font-size:10.5px;color:var(--ink-2);line-height:1.2;display:block}
+.ph-sec{padding:14px 18px 6px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+.ph-sec span{color:var(--ink-2);font-weight:500}
+.circle-row{display:flex;padding:0 18px}
+.circle-row .av{width:34px;height:34px;font-size:12px;border:2.5px solid var(--ground);margin-right:-8px}
+.msgs{padding:8px 14px;display:grid;gap:7px}
+.msg{background:var(--card);border-radius:16px 16px 16px 4px;padding:9px 12px;line-height:1.35}
+.msg b{display:block;font-size:11.5px;color:var(--sage)}
+.ph-btn{margin:auto 14px 16px;background:var(--amber);color:#fff;font-weight:700;text-align:center;border-radius:18px;padding:15px;font-size:15px}
+.ph-nav{display:flex;justify-content:space-around;padding:4px 10px 18px;color:#8A928D;font-size:10.5px;font-weight:600}
+.ph-nav span.on{color:var(--sage)}
+
+.float{position:absolute;z-index:3;background:var(--card);border-radius:22px;padding:14px 18px;box-shadow:0 22px 50px -22px rgba(20,32,26,.4);display:flex;gap:12px;align-items:center;animation:bob 6s ease-in-out infinite}
+.float b{display:block;font-size:20px;letter-spacing:-.03em;line-height:1.1}
+.float small{color:var(--ink-2);font-size:13.5px;font-weight:500}
+.float .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none}
+.f1{top:0;left:2%;animation-delay:-1s}
+.f2{top:40%;right:-6%;animation-delay:-3s}
+.f3{bottom:24%;left:-8%;max-width:250px;animation-delay:-2s;align-items:flex-start}
+.f4{bottom:0;right:0;animation-delay:-4s}
+.f3 p{font-size:14.5px;line-height:1.35}
+.f3 p b{font-size:13px;color:var(--sage);display:block}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media(max-width:980px){
+  .hero .frame{grid-template-columns:minmax(0,1fr)}
+  .stage{height:640px;margin-top:20px}
+  .f1{left:0}.f2{right:0}.f3{left:0}.f4{right:0}
+}
+@media(max-width:520px){
+  .hero h1 .l2,.hero h1 .l4{padding-left:.3em}
+  .stage{height:600px}
+  .float{padding:10px 13px;border-radius:18px}
+  .float b{font-size:16px}.float small{font-size:12px}
+  .float .ic{width:34px;height:34px;border-radius:11px}
+  .f3{max-width:200px;bottom:12%}.f3 p{font-size:13px}
+  .f2{top:10%}
+}
+
+/* ---------- chapters (shared) ---------- */
+.ch{padding:var(--gap) 0;position:relative}
+.ch .frame{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,100px);align-items:center}
+@media(max-width:900px){.ch .frame,.not .frame,.faq .frame{grid-template-columns:minmax(0,1fr)}}
+
+/* ch1 day */
+.panel{background:var(--card);border-radius:34px;padding:clamp(26px,3.4vw,46px)}
+.days{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px 0 26px}
+.day{border:0;background:var(--ground);border-radius:20px;padding:18px 18px;text-align:left;cursor:pointer;transition:background .2s,transform .2s var(--ease)}
+.day:hover{transform:translateY(-2px)}
+.day small{display:block;color:var(--ink-2);font-size:14px;font-weight:500}
+.day b{font-size:24px;letter-spacing:-.03em}
+.day[aria-pressed=true]{background:var(--ink);color:var(--ground)}
+.day[aria-pressed=true] small{color:#B9C3BD}
+.big-count{display:flex;align-items:baseline;gap:14px}
+.big-count b{font-size:clamp(80px,9vw,128px);letter-spacing:-.06em;line-height:.9;font-variant-numeric:tabular-nums}
+.big-count span{font-size:22px;font-weight:600;color:var(--ink-2)}
+.panel p.note{margin-top:14px;color:var(--ink-2)}
+.panel h3{font-size:24px;letter-spacing:-.03em;line-height:1.15;font-weight:700}
+
+/* ch2 moments */
+.ch2{background:var(--ground-2)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.chip{border:0;background:var(--card);border-radius:999px;padding:12px 20px;font-weight:600;font-size:16px;cursor:pointer;transition:background .2s,color .2s,transform .2s var(--ease)}
+.chip:hover{transform:translateY(-2px)}
+.chip[aria-pressed=true]{background:var(--sage);color:#fff}
+.found{margin-top:28px;font-weight:700;font-size:20px}
+.found b{font-size:34px;letter-spacing:-.04em}
+.plan{display:grid;gap:10px}
+.plan li{list-style:none;background:var(--card);border-radius:22px;padding:20px 24px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;animation:pop .4s var(--ease)}
+.plan li i{width:12px;height:12px;border-radius:50%;background:var(--amber);margin-top:9px}
+.plan li b{display:block;font-size:19px;letter-spacing:-.02em}
+.plan li span{color:var(--ink-2)}
+.plan .empty{background:transparent;border:2px dashed #CDBFA9;color:var(--ink-2);display:block;text-align:center;padding:38px}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ch3 circle */
+.ch3{background:var(--sage-field)}
+.ring{position:relative;width:min(520px,86vw);aspect-ratio:1;margin:0 auto}
+.ring .core{position:absolute;inset:30%;border-radius:50%;background:var(--sage);color:#fff;display:grid;place-items:center;text-align:center;padding:10px}
+.ring .core b{font-size:clamp(26px,3.2vw,40px);letter-spacing:-.04em;line-height:1;display:block}
+.ring .core small{font-size:15px;opacity:.85}
+.ring .p{position:absolute;width:17%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:clamp(14px,1.6vw,20px);transform:translate(-50%,-50%);transition:transform .6s var(--ease)}
+.ring .p.you{background:var(--amber)!important;box-shadow:0 0 0 6px rgba(200,116,42,.25)}
+.ring .tag{position:absolute;left:50%;top:-10%;transform:translateX(-50%);background:var(--card);border-radius:999px;padding:8px 16px;font-weight:600;font-size:14px;white-space:nowrap}
+.facts{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.facts b{display:block;font-size:clamp(40px,4.4vw,64px);letter-spacing:-.05em;line-height:1}
+.facts span{color:var(--ink-2);font-size:16px;display:block;margin-top:6px}
+
+/* ch4 hold */
+.ch4{background:var(--dark);color:var(--ground)}
+.ch4 .lede{color:#C9D2CC}
+.ch4 .it.amber{color:#E9A15A}
+.chat{background:var(--dark-2);border-radius:34px;padding:22px;display:flex;flex-direction:column}
+.chat-top{display:flex;align-items:center;gap:12px;padding:6px 6px 16px}
+.chat-top b{display:block;font-size:17px}
+.chat-top small{color:#9FB0A6;font-size:14px}
+.chat-top .live{margin-left:auto;font-size:13px;color:#9FD6B3;font-weight:600;display:flex;gap:7px;align-items:center}
+.chat-top .live i{width:8px;height:8px;border-radius:50%;background:#6FCF97}
+.thread{display:flex;flex-direction:column;gap:10px;flex:1;justify-content:flex-end;padding:10px 4px}
+.bub{max-width:82%;padding:12px 16px;border-radius:20px 20px 20px 6px;background:#2A3D33;line-height:1.4;font-size:16.5px;animation:pop .35s var(--ease)}
+.bub b{display:block;font-size:13px;color:#9FD6B3}
+.bub.me{align-self:flex-end;background:var(--amber);color:#fff;border-radius:20px 20px 6px 20px}
+.typing{align-self:flex-start;background:#2A3D33;border-radius:20px;padding:14px 18px;display:flex;gap:5px}
+.typing i{width:7px;height:7px;border-radius:50%;background:#9FB0A6;animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.sos{margin-top:10px;width:100%;justify-content:center;font-size:18px;padding:18px}
+.sos[disabled]{opacity:.6;cursor:default;transform:none}
+
+/* ch5 celebrate */
+.ch5 .frame{grid-template-columns:1fr}
+.ch5 .top{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,100px);align-items:end}
+@media(max-width:900px){.ch5 .top{grid-template-columns:1fr}}
+.sliders{display:grid;gap:22px}
+.sl label{display:flex;justify-content:space-between;font-weight:600;margin-bottom:10px}
+.sl label b{font-size:22px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.sl input{width:100%;accent-color:var(--sage);height:28px}
+.road{margin-top:60px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end}
+.stop{background:var(--card);border-radius:28px;padding:26px 22px 24px;position:relative;transition:transform .3s var(--ease)}
+.stop:hover{transform:translateY(-4px)}
+.stop:nth-child(1){min-height:190px}.stop:nth-child(2){min-height:230px}.stop:nth-child(3){min-height:270px}.stop:nth-child(4){min-height:310px}.stop:nth-child(5){min-height:350px;background:var(--ink);color:var(--ground)}
+.stop:nth-child(5) small,.stop:nth-child(5) span{color:#B9C3BD}
+.stop small{font-weight:600;color:var(--ink-2);font-size:15px}
+.stop b{display:block;font-size:clamp(34px,3.4vw,50px);letter-spacing:-.05em;line-height:1;margin:14px 0 6px;font-variant-numeric:tabular-nums}
+.stop span{color:var(--ink-2);font-size:15px}
+.stop .flag{position:absolute;top:-14px;right:20px;background:var(--amber);color:#fff;font-weight:700;font-size:13px;border-radius:999px;padding:5px 12px}
+@media(max-width:900px){.road{grid-template-columns:1fr 1fr}.stop:nth-child(n){min-height:0}.stop:nth-child(5){grid-column:1/-1}}
+.road-note{margin-top:28px;color:var(--ink-2);font-size:15px}
+
+/* values */
+.values{background:var(--ground-2)}
+.values .frame{display:block}
+.vlist{margin-top:60px;display:grid;grid-template-columns:1fr 1fr;gap:0 clamp(40px,6vw,100px)}
+.vlist div{padding:34px 0;border-top:3px solid var(--ink)}
+.vlist h3{font-size:clamp(34px,3.6vw,54px);letter-spacing:-.045em}
+.vlist p{margin-top:12px;font-size:19px;max-width:28em}
+@media(max-width:760px){.vlist{grid-template-columns:1fr}}
+
+/* not therapy */
+.not .frame{grid-template-columns:1.2fr .8fr;align-items:center}
+.not .help{background:var(--sage);color:#fff;border-radius:34px;padding:clamp(28px,3.4vw,46px);display:flex;flex-direction:column;justify-content:space-between;gap:30px}
+.help small{font-weight:600;font-size:16px;opacity:.9}
+.help .num{font-size:clamp(42px,4.6vw,66px);font-weight:800;letter-spacing:-.04em;line-height:1;margin:10px 0}
+.help p{opacity:.92;font-size:16.5px}
+.not .body p{font-size:clamp(19px,1.6vw,23px);margin-top:28px;max-width:30em}
+
+/* faq */
+.faq .frame{grid-template-columns:.8fr 1.2fr;align-items:start}
+details{background:var(--card);border-radius:24px;margin-bottom:10px;transition:background .2s}
+details summary{cursor:pointer;list-style:none;padding:24px 28px;font-weight:700;font-size:20px;letter-spacing:-.02em;display:flex;justify-content:space-between;gap:20px;align-items:center}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:"";width:28px;height:28px;flex:none;border-radius:50%;background:var(--ground) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 1v10M1 6h10' stroke='%2314201A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center/12px no-repeat;transition:transform .3s var(--ease)}
+details[open] summary::after{transform:rotate(45deg)}
+details p{padding:0 28px 26px;color:var(--ink-2);max-width:42em}
+details:hover{background:#fff}
+
+/* final */
+.final{background:var(--amber-soft);text-align:center;padding:var(--gap) 0 calc(var(--gap) * .8)}
+.final .frame{display:block}
+.final .scrolled{font-weight:600;color:var(--ink-2);font-size:19px}
+.final .scrolled b{color:var(--ink);font-variant-numeric:tabular-nums}
+.final h2{margin:22px auto 0;max-width:12em}
+.final .lede{margin:28px auto 0}
+.final form{margin:36px auto 0;justify-content:center}
+.final .wait,.final .thanks{margin:0 auto}
+footer{background:var(--ink);color:var(--ground);padding:70px 0 120px}
+footer .name{font-size:clamp(120px,24vw,360px);font-weight:800;letter-spacing:-.07em;line-height:.8}
+footer .name .it{color:var(--amber);font-size:.9em}
+@media(max-width:900px){.not .frame,.faq .frame{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.f2,.f3{display:none}.stage{height:580px}}
+footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:40px;color:#B9C3BD;font-size:15px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a href="#top" class="mark" aria-label="Quit, torna su"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#F6F1E8" stroke-width="3"/><path d="M15 15l5 5" stroke="#E9A15A" stroke-width="3" stroke-linecap="round"/></svg></i>Quit</a>
+  <div class="counter" aria-live="polite"><span class="dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="13" r="8" stroke="#2F6B4F" stroke-width="2.5"/><path d="M12 9v4l3 2M9 2h6" stroke="#2F6B4F" stroke-width="2.5" stroke-linecap="round"/></svg></span><b id="hrs">0</b><span>ore</span><span class="l">senza fumo</span></div>
+  <div class="right"><a href="#iscriviti" class="btn"><span class="l">Lista d'attesa</span><span class="s">Iscriviti</span></a></div>
+</header>
+
+<nav class="chapters hidden" aria-label="Capitoli">
+  <a href="#giorno">Il giorno</a>
+  <a href="#momenti">I momenti</a>
+  <a href="#cerchio">Il cerchio</a>
+  <a href="#tieni-duro">Tieni duro</a>
+  <a href="#festeggia">Festeggia</a>
+</nav>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="frame">
+    <div>
+      <h1 class="rv"><span>Da soli</span><span class="l2 it amber">si prova.</span><span>Insieme</span><span class="l4 it sage">si smette.</span></h1>
+      <p class="lede rv">Quit è una comunità per smettere di fumare. Ti mettiamo in un piccolo gruppo che smette il tuo stesso giorno: vi aspettate, vi scrivete quando arriva la voglia, festeggiate insieme.</p>
+      <div class="cta-row rv">
+        <form class="js-form" novalidate>
+          <div class="wait"><input type="email" required placeholder="La tua email" aria-label="La tua email"><button class="btn" type="submit">Entra nel pilota</button></div>
+          <div class="thanks" role="status">Ci sei. Ti scriviamo quando parte il tuo cerchio.</div>
+        </form>
+      </div>
+      <p class="hint rv">Gratis durante il pilota · Sigarette, svapo, tabacco riscaldato · <a href="#giorno" class="how">Scopri come funziona <span>↓</span></a></p>
+    </div>
+
+    <div class="stage" aria-label="Anteprima dell'app Quit">
+      <div class="float f1 rv"><span class="ic" style="background:var(--sage-field)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2F6B4F" stroke-width="2.4"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M15 20c0-2.4 1.4-4.4 3.6-4.4 1.6 0 2.4 1 2.4 2.4"/></svg></span><span><b>9 persone</b><small>Cerchio del 3 novembre</small></span></div>
+      <div class="float f2 rv"><span class="ic" style="background:var(--amber-soft)"><svg width="22" height="22" viewBox="0 0 24 24" fill="#C8742A"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg></span><span><b>12 giorni</b><small>di fila, senza fumo</small></span></div>
+      <div class="float f3 rv"><span class="av" style="background:#6C8FB5;width:36px;height:36px;font-size:13px">D</span><p><b>Davide · giorno 12</b>Sono qui. Respira, scrivimi finché passa.</p></div>
+      <div class="float f4 rv"><span class="ic" style="background:var(--sage)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><path d="M5 12l5 5 9-10"/></svg></span><span><small>Tappa raggiunta</small><b>Prima settimana</b></span></div>
+
+      <div class="phone rv">
+        <div class="screen">
+          <div class="sb"><span>9:41</span><i></i><span>●●●</span></div>
+          <div class="ph-head"><span class="av" style="background:var(--amber)">M</span><div style="flex:1"><b>Marta</b><small>Giorno 12 · prossima tappa: 2 settimane</small><div class="prog"><i></i></div></div></div>
+          <div class="stats"><div><b>12</b><small>giorni liberi</small></div><div><b>43 €</b><small>risparmiati</small></div><div><b>144</b><small>sigarette non fumate</small></div></div>
+          <div class="ph-sec">Il tuo cerchio <span>9 persone</span></div>
+          <div class="circle-row"><span class="av" style="background:#6C8FB5">D</span><span class="av" style="background:#B7685A">S</span><span class="av" style="background:#7C9A5E">P</span><span class="av" style="background:#9A7BB0">L</span><span class="av" style="background:#C9A04A">E</span><span class="av" style="background:#4F7F86">+4</span></div>
+          <div class="msgs">
+            <div class="msg"><b>Sara</b>Giorno 12 anche per me. Il caffè del mattino è ancora il momento peggiore.</div>
+            <div class="msg"><b>Paolo</b>Io stasera ho cena con i colleghi. Mi tenete d'occhio?</div>
+          </div>
+          <div class="ph-btn">Ho bisogno adesso</div>
+          <div class="ph-nav"><span class="on">Oggi</span><span>Cerchio</span><span>Tappe</span><span>Profilo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 1 GIORNO -->
+<section class="ch ch1" id="giorno" data-ch="0">
+  <div class="frame">
+    <div>
+      <h2 class="rv">Un giorno <span class="it amber">preciso.</span></h2>
+      <p class="lede rv">Non domani, non "prima o poi". Scegli la data in cui smetti, con qualche giorno per prepararti. Ogni cerchio parte di lunedì: chi sceglie la tua stessa data smette con te.</p>
+    </div>
+    <div class="panel rv">
+      <h3>Quando parte il tuo cerchio?</h3>
+      <div class="days" id="days">
+        <button class="day" type="button" aria-pressed="true"><small>Lunedì</small><b>16 novembre</b></button>
+        <button class="day" type="button" aria-pressed="false"><small>Lunedì</small><b>23 novembre</b></button>
+        <button class="day" type="button" aria-pressed="false"><small>Lunedì</small><b>30 novembre</b></button>
+        <button class="day" type="button" aria-pressed="false"><small>Lunedì</small><b>7 dicembre</b></button>
+      </div>
+      <div class="big-count"><b id="dleft">5</b><span id="dlabel">giorni per prepararti</span></div>
+      <p class="note" id="dnote">Abbastanza per finire l'ultimo pacchetto e conoscere il tuo gruppo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 MOMENTI -->
+<section class="ch ch2" id="momenti" data-ch="1">
+  <div class="frame">
+    <div>
+      <h2 class="rv">Ogni sigaretta ha <span class="it sage">un perché.</span></h2>
+      <p class="lede rv">Prima di smettere, per qualche giorno segni quando accendi. Così sai in anticipo dove ti servirà aiuto. Tocca i tuoi momenti.</p>
+      <div class="chips rv" id="chips">
+        <button class="chip" type="button" aria-pressed="true" data-k="0">Col caffè</button>
+        <button class="chip" type="button" aria-pressed="false" data-k="1">Dopo pranzo</button>
+        <button class="chip" type="button" aria-pressed="true" data-k="2">Quando sono stressato</button>
+        <button class="chip" type="button" aria-pressed="false" data-k="3">Quando bevo</button>
+        <button class="chip" type="button" aria-pressed="false" data-k="4">Per noia</button>
+        <button class="chip" type="button" aria-pressed="false" data-k="5">In macchina</button>
+        <button class="chip" type="button" aria-pressed="false" data-k="6">Con chi fuma</button>
+      </div>
+      <p class="found rv"><b id="fcount">0</b> momenti su 7 nel tuo piano</p>
+    </div>
+    <ul class="plan rv" id="plan" aria-live="polite">
+      <li class="empty">Scegli un momento a sinistra: qui compare cosa fare quando arriva.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3 CERCHIO -->
+<section class="ch ch3" id="cerchio" data-ch="2">
+  <div class="frame">
+    <div class="ring rv" id="ring" aria-hidden="true">
+      <span class="tag">Cerchio del 16 novembre</span>
+      <div class="core"><div><b>Giorno zero</b><small>insieme</small></div></div>
+    </div>
+    <div>
+      <h2 class="rv">Stesso giorno, <span class="it sage">stesso cerchio.</span></h2>
+      <p class="lede rv">Un gruppo piccolo, abbastanza da avere sempre qualcuno sveglio, abbastanza piccolo da conoscervi per nome. Usi un nickname e racconti solo quello che vuoi.</p>
+      <div class="facts rv">
+        <div><b>8–12</b><span>persone per cerchio</span></div>
+        <div><b>1</b><span>data di partenza comune</span></div>
+        <div><b>0</b><span>giudizi se ricadi</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 TIENI DURO -->
+<section class="ch ch4" id="tieni-duro" data-ch="3">
+  <div class="frame">
+    <div>
+      <h2 class="rv">Alle 23:40 <span class="it amber">non sei solo.</span></h2>
+      <p class="lede rv">Quando arriva la voglia premi "Ho bisogno". Il tuo cerchio lo vede e risponde. Nessuna predica: persone che ci sono passate ieri. Prova.</p>
+    </div>
+    <div class="chat rv">
+      <div class="chat-top"><span class="av" style="background:var(--sage-2);width:40px;height:40px;font-size:14px">9</span><div><b>Cerchio del 3 novembre</b><small>Sara, Davide, Paolo e altri 6</small></div><span class="live"><i></i>4 online</span></div>
+      <div class="thread" id="thread" aria-live="polite">
+        <div class="bub"><b>Paolo</b>Primo weekend senza. Strano ma ok.</div>
+        <div class="bub"><b>Sara</b>Bravo. Io ieri sera ho tenuto duro grazie a voi.</div>
+        <div class="bub"><b>Davide</b>Domani giorno 13. Chi c'è per il caffè delle 8?</div>
+      </div>
+      <button class="btn amber sos" id="sos" type="button">Ho bisogno adesso</button>
+    </div>
+  </div>
+</section>
+
+<!-- 5 FESTEGGIA -->
+<section class="ch ch5" id="festeggia" data-ch="4">
+  <div class="frame">
+    <div class="top">
+      <div>
+        <h2 class="rv">Ogni giorno <span class="it amber">conta.</span></h2>
+        <p class="lede rv">Giorni, soldi, sigarette non fumate. Ogni tappa la festeggi con il tuo cerchio. Metti i tuoi numeri e guarda quanto vale la strada.</p>
+      </div>
+      <div class="sliders rv">
+        <div class="sl"><label for="cig">Sigarette al giorno <b id="cigv">12</b></label><input id="cig" type="range" min="1" max="40" value="12"></div>
+        <div class="sl"><label for="price">Prezzo del pacchetto da 20 <b id="pricev">6,00 €</b></label><input id="price" type="range" min="4" max="9" step="0.1" value="6"></div>
+      </div>
+    </div>
+    <div class="road" id="road">
+      <div class="stop rv" data-d="1"><small>Giorno 1</small><b>—</b><span></span></div>
+      <div class="stop rv" data-d="7"><small>Prima settimana</small><b>—</b><span></span></div>
+      <div class="stop rv" data-d="30"><small>Primo mese</small><b>—</b><span></span></div>
+      <div class="stop rv" data-d="100"><small>100 giorni</small><b>—</b><span></span></div>
+      <div class="stop rv" data-d="365"><span class="flag">Puoi fare da guida</span><small>Un anno</small><b>—</b><span></span></div>
+    </div>
+    <p class="road-note rv">Il prezzo di partenza è un esempio: mettici quello del tuo pacchetto. Dopo un anno puoi accompagnare un cerchio nuovo.</p>
+  </div>
+</section>
+
+<!-- VALORI -->
+<section class="ch values" id="valori">
+  <div class="frame">
+    <h2 class="rv">Una comunità, <span class="it sage">non un'app che ti sgrida.</span></h2>
+    <div class="vlist">
+      <div class="rv"><h3>Insieme</h3><p>Si parte in gruppo e ci si aspetta. Il tuo giorno buono aiuta qualcun altro.</p></div>
+      <div class="rv"><h3>Zero giudizio</h3><p>Una ricaduta non azzera niente. Lo dici al cerchio e riparti da dove eri.</p></div>
+      <div class="rv"><h3>Piccoli passi</h3><p>Un giorno, poi un altro. Festeggiamo anche le tappe che sembrano minuscole.</p></div>
+      <div class="rv"><h3>Riservatezza</h3><p>Nickname, niente pubblicità, niente dati venduti. Quello che scrivi resta nel cerchio.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NON TERAPIA -->
+<section class="ch not" id="cosa-non-e">
+  <div class="frame">
+    <div class="body">
+      <h2 class="rv">Non siamo medici. <span class="it amber">Ti stiamo accanto.</span></h2>
+      <p class="rv">Quit è accompagnamento tra pari. Non fa diagnosi, non prescrive farmaci e non sostituisce il tuo medico, un centro antifumo o la terapia che stai seguendo. Si affianca a tutto questo: è il posto dove ti senti meno solo mentre lo fai.</p>
+    </div>
+    <div class="help rv">
+      <small>Se cerchi un supporto professionale</small>
+      <div><div class="num">800 554 088</div><p>Telefono Verde contro il Fumo dell'Istituto Superiore di Sanità. Gratuito e anonimo, dal lunedì al venerdì, dalle 10 alle 16.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="ch faq" id="faq">
+  <div class="frame">
+    <h2 class="rv">Le cose che <span class="it sage">ci chiedete.</span></h2>
+    <div class="rv">
+      <details><summary>Quanto costa?</summary><p>Durante il pilota è gratis. Se in futuro ci saranno funzioni a pagamento lo diremo prima, e chi è entrato nel pilota lo saprà per primo.</p></details>
+      <details><summary>Vale anche per lo svapo o il tabacco riscaldato?</summary><p>Sì. Il percorso è lo stesso: scegli un giorno, conosci i tuoi momenti, smetti con il tuo cerchio.</p></details>
+      <details><summary>Sto già seguendo un percorso con il medico. Ha senso?</summary><p>Sì, Quit nasce per affiancarsi. Il medico o il centro antifumo restano il tuo riferimento; il cerchio ti accompagna nel quotidiano.</p></details>
+      <details><summary>Chi legge quello che scrivo?</summary><p>Solo le persone del tuo cerchio. Usi un nickname e decidi tu cosa raccontare.</p></details>
+      <details><summary>E se ricado?</summary><p>Lo dici al cerchio e riparti. Nessuno ti butta fuori e i giorni fatti restano tuoi.</p></details>
+      <details><summary>Quando parte?</summary><p>Stiamo formando i primi cerchi del pilota. Lascia l'email e ti scriviamo quando c'è un posto per te.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final" id="iscriviti">
+  <div class="frame">
+    <p class="scrolled rv">Scorrendo fin qui hai messo insieme <b id="hrs2">72</b> ore. Le prossime falle con noi.</p>
+    <h2 class="rv">Il tuo ultimo pacchetto <span class="it amber">lo finisci con noi.</span></h2>
+    <p class="lede rv">Lascia l'email. Ti scriviamo quando c'è un cerchio pronto a partire.</p>
+    <form class="js-form rv" novalidate>
+      <div class="wait"><input type="email" required placeholder="La tua email" aria-label="La tua email"><button class="btn" type="submit">Entra nel pilota</button></div>
+      <div class="thanks" role="status">Ci sei. Ti scriviamo quando parte il tuo cerchio.</div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="frame">
+    <div class="name">Quit<span class="it">.</span></div>
+    <div class="row"><span>© 2026 Quit · Progetto pilota</span><span>Quit non è un servizio sanitario. Per un supporto clinico rivolgiti al tuo medico.</span></div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* reveal with stagger */
+const io = new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  const sibs=[...e.target.parentElement.querySelectorAll(':scope > .rv')];
+  e.target.style.transitionDelay=(Math.max(0,sibs.indexOf(e.target))*80)+'ms';
+  e.target.classList.add('in'); io.unobserve(e.target);
+}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+document.querySelectorAll('.rv').forEach(el=>{const r=el.getBoundingClientRect(); if(r.top<innerHeight && r.bottom>0) el.classList.add('in'); else io.observe(el);});
+
+/* forms */
+document.querySelectorAll('.js-form').forEach(f=>f.addEventListener('submit',e=>{
+  e.preventDefault();
+  const i=f.querySelector('input');
+  if(!i.value || !i.checkValidity()){i.focus();i.placeholder='Serve un indirizzo email valido';return;}
+  // TODO: collegare a Tally/Formspree prima del lancio
+  document.querySelectorAll('.js-form').forEach(x=>x.classList.add('sent'));
+}));
+
+/* live counter + chapter bar */
+const hrs=document.getElementById('hrs'), bar=document.querySelector('.chapters');
+const links=[...bar.querySelectorAll('a')], chs=[...document.querySelectorAll('[data-ch]')];
+let last=-1;
+function onScroll(){
+  const max=document.documentElement.scrollHeight-innerHeight;
+  const p=max>0?Math.min(1,Math.max(0,scrollY/max)):0;
+  const h=Math.round(p*72);
+  if(h!==last){hrs.textContent=h;last=h;}
+  const mid=innerHeight*.5; let cur=-1;
+  chs.forEach((s,i)=>{const r=s.getBoundingClientRect(); if(r.top<mid) cur=i;});
+  const end=document.getElementById('valori').getBoundingClientRect().top<innerHeight*.5;
+  bar.classList.toggle('hidden', cur<0 || end);
+  links.forEach((a,i)=>{a.classList.toggle('on',i===cur);a.classList.toggle('done',i<cur);});
+  const on=links[cur]; if(on && bar.scrollWidth>bar.clientWidth) bar.scrollLeft=on.offsetLeft-bar.clientWidth/2+on.clientWidth/2;
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* chapter 1: real next Mondays */
+const MESI=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const today=new Date(); today.setHours(0,0,0,0);
+let first=new Date(today); const add=((8-first.getDay())%7)||7; first.setDate(first.getDate()+add);
+if((first-today)/864e5<3) first.setDate(first.getDate()+7);
+const dayBtns=[...document.querySelectorAll('.day')];
+const dates=dayBtns.map((b,i)=>{const d=new Date(first);d.setDate(d.getDate()+7*i);b.querySelector('b').textContent=d.getDate()+' '+MESI[d.getMonth()];return d;});
+function pickDay(i){
+  dayBtns.forEach((b,j)=>b.setAttribute('aria-pressed',i===j));
+  const n=Math.round((dates[i]-today)/864e5);
+  document.getElementById('dleft').textContent=n;
+  document.getElementById('dlabel').textContent=n===1?'giorno per prepararti':'giorni per prepararti';
+  document.getElementById('dnote').textContent= n<=7 ? "Abbastanza per finire l'ultimo pacchetto e conoscere il tuo gruppo." : n<=14 ? "Tempo giusto per segnare i tuoi momenti e dirlo a chi ti sta vicino." : "Tanto tempo: usalo per prepararti, ma non spostare la data.";
+  const tag=document.querySelector('.ring .tag'); if(tag) tag.textContent='Cerchio del '+dates[i].getDate()+' '+MESI[dates[i].getMonth()];
+}
+dayBtns.forEach((b,i)=>b.addEventListener('click',()=>pickDay(i))); pickDay(0);
+
+/* chapter 2: moments */
+const TIPS=[
+  ['Col caffè','Per le prime settimane cambia tazza, posto o bevanda. Rompi l\'abbinata.'],
+  ['Dopo pranzo','Alzati subito da tavola e fai due passi, anche solo intorno al palazzo.'],
+  ['Quando sono stressato','Scrivi al cerchio prima di accendere. Basta una riga: "ci sono quasi".'],
+  ['Quando bevo','Nelle prime settimane scegli serate dove si fuma poco. E avvisa il cerchio prima di uscire.'],
+  ['Per noia','Tieni le mani occupate: una penna, qualcosa da sgranocchiare, la chat del cerchio aperta.'],
+  ['In macchina','Prima del giorno zero togli accendino e pacchetti dall\'auto.'],
+  ['Con chi fuma','Dillo prima ai tuoi amici fumatori: chi lo sa ti offre meno sigarette.']
+];
+const plan=document.getElementById('plan'), sel=new Set([0,2]);
+function renderPlan(){
+  document.getElementById('fcount').textContent=sel.size;
+  plan.innerHTML = sel.size ? [...sel].sort((a,b)=>a-b).map(k=>`<li><i></i><div><b>${TIPS[k][0]}</b><span>${TIPS[k][1]}</span></div></li>`).join('')
+    : '<li class="empty">Scegli un momento a sinistra: qui compare cosa fare quando arriva.</li>';
+}
+document.querySelectorAll('#chips .chip').forEach(c=>c.addEventListener('click',()=>{
+  const k=+c.dataset.k; sel.has(k)?sel.delete(k):sel.add(k);
+  c.setAttribute('aria-pressed',sel.has(k)); renderPlan();
+}));
+renderPlan();
+
+/* chapter 3: ring of people */
+const ring=document.getElementById('ring');
+const cols=['#6C8FB5','#B7685A','#7C9A5E','#9A7BB0','#C9A04A','#4F7F86','#C07F9B','#5E7A6B','#8C6E52','#C8742A'];
+const ini=['D','S','P','L','E','G','A','R','F','Tu'];
+ini.forEach((t,i)=>{
+  const a=((i+.5)/ini.length)*Math.PI*2-Math.PI/2, r=40;
+  const s=document.createElement('span'); s.className='p'+(t==='Tu'?' you':'');
+  s.textContent=t; s.style.background=cols[i];
+  s.style.left=(50+r*Math.cos(a))+'%'; s.style.top=(50+r*Math.sin(a))+'%';
+  ring.appendChild(s);
+});
+
+/* chapter 4: SOS demo */
+const thread=document.getElementById('thread'), sos=document.getElementById('sos');
+const REPLIES=[['Sara','Ci sono. Dove sei adesso?'],['Davide','Anche a me stamattina. Bevi un bicchiere d\'acqua e scrivimi mentre lo bevi.'],['Paolo','Giorno 9 per me. Se resisti tu, resisto anch\'io.']];
+function bub(who,txt,me){const d=document.createElement('div');d.className='bub'+(me?' me':'');d.innerHTML=(me?'':'<b>'+who+'</b>')+txt;thread.appendChild(d);while(thread.children.length>5)thread.firstElementChild.remove();}
+sos.addEventListener('click',()=>{
+  sos.disabled=true; bub('','Ho una voglia fortissima. Adesso.',true);
+  let t=reduce?100:900;
+  REPLIES.forEach((r,i)=>{
+    setTimeout(()=>{const ty=document.createElement('div');ty.className='typing';ty.innerHTML='<i></i><i></i><i></i>';thread.appendChild(ty);
+      setTimeout(()=>{ty.remove();bub(r[0],r[1]);if(i===REPLIES.length-1){sos.disabled=false;sos.textContent='Riprova';}},reduce?50:900);},t);
+    t+=reduce?150:1700;
+  });
+});
+
+/* chapter 5: savings road */
+const cig=document.getElementById('cig'), price=document.getElementById('price');
+const eur=v=>v.toLocaleString('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const num=v=>v.toLocaleString('it-IT');
+function road(){
+  const c=+cig.value, p=+price.value;
+  document.getElementById('cigv').textContent=c;
+  document.getElementById('pricev').textContent=p.toLocaleString('it-IT',{minimumFractionDigits:2})+' €';
+  document.querySelectorAll('.stop').forEach(s=>{
+    const d=+s.dataset.d;
+    s.querySelector('b').textContent=eur(c/20*p*d);
+    s.querySelector('span:last-child').textContent=num(c*d)+' sigarette non fumate';
+  });
+}
+cig.addEventListener('input',road); price.addEventListener('input',road); road();
+</script>
+</body>
+</html>
